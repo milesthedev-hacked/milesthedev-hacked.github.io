@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="https://cdn-1.webcatalog.io/catalog/quizlet/quizlet-icon.png">
+<title>Science Study Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #008;
+    cursor: pointer;
+  }
+
+  canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 0;
+  }
+
+  /* Dark futuristic button */
+  .cssbuttons-io-button {
+    background: #008;
+    color: #000000;
+    font-family: 'Orbitron', sans-serif;
+    padding: 0.35em;
+    padding-left: 1.2em;
+    padding-right: 3.3em;
+    font-size: 17px;
+    font-weight: 500;
+    border-radius: 0.9em;
+    border: none;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    box-shadow: inset 0 0 1.6em -0.6em #00ffe0;
+    overflow: hidden;
+    position: relative;
+    height: 2.8em;
+    cursor: pointer;
+    transition: all 0.3s;
+    z-index: 2;
+  }
+
+  .cssbuttons-io-button .icon {
+    background: #111;
+    margin-left: 1em;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 2.2em;
+    width: 2.2em;
+    border-radius: 0.7em;
+    box-shadow: 0.1em 0.1em 0.6em 0.2em #00ffe0;
+    right: 0.3em;
+    transition: all 0.3s;
+  }
+
+  .cssbuttons-io-button:hover .icon {
+    width: calc(100% - 0.6em);
+  }
+
+  .cssbuttons-io-button .icon svg {
+    width: 1.1em;
+    transition: transform 0.3s;
+    color: #00ffe0;
+  }
+
+  .cssbuttons-io-button:hover .icon svg {
+    transform: translateX(0.1em);
+  }
+
+  .cssbuttons-io-button:active .icon {
+    transform: scale(0.95);
+  }
+
+</style>
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+
+<!-- Button -->
+<button class="cssbuttons-io-button" id="spaceBtn">
+  PLAY NOW
+  <div class="icon">
+    <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h24v24H0z" fill="none"></path>
+      <path d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z" fill="currentColor"></path>
+    </svg>
+  </div>
+</button>
+
+<script>
+const targetURL = "https://tinklegames.github.io/redirect/codes";
+
+document.getElementById("spaceBtn").addEventListener("click", () => {
+  const newTab = window.open("about:blank", "_blank");
+
+  // Write the basic HTML structure
+  newTab.document.write(`
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <link rel="icon" type="image/png" href="https://cdn-1.webcatalog.io/catalog/quizlet/quizlet-icon.png">
+        <title>Science Study Guide</title>
+        <style>
+          body, html { margin:0; padding:0; height:100%; overflow:hidden; }
+          iframe { width:100%; height:100%; border:none; }
+        </style>
+      </head>
+      <body>
+        <iframe src="${targetURL}" allow="clipboard-write; fullscreen"></iframe>
+      </body>
+    </html>
+  `);
+
+  newTab.document.close();
+});
+
+// Canvas stars background
+const canvas = document.getElementById('bgCanvas');
+const ctx = canvas.getContext('2d');
+
+let stars = [];
+let numStars = 150;
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+function initStars() {
+  stars = [];
+  for (let i = 0; i < numStars; i++) {
+    stars.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      radius: Math.random() * 1.5 + 0.5,
+      alpha: Math.random(),
+      delta: Math.random() * 0.02
+    });
+  }
+}
+initStars();
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  stars.forEach(star => {
+    ctx.beginPath();
+    ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(0,255,224,${star.alpha})`;
+    ctx.fill();
+    star.alpha += star.delta;
+    if (star.alpha <= 0 || star.alpha >= 1) star.delta *= -1;
+  });
+  requestAnimationFrame(animate);
+}
+animate();
+</script>
+</body>
+</html>
