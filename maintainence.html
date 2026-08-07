@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maintenance · Tinkle</title>
+    <!-- same font & vibe -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-base: #020617;
+            --bg-grad-1: rgba(79, 70, 229, 0.45);
+            --bg-grad-2: rgba(34, 211, 238, 0.28);
+            --bg-grad-3: rgba(168, 85, 247, 0.38);
+            --panel: rgba(15, 23, 42, 0.95);
+            --panel-soft: rgba(15, 23, 42, 0.9);
+            --accent: #4f46e5;
+            --accent-2: #a855f7;
+            --accent-3: #22d3ee;
+            --text: #f9fafb;
+            --text-soft: #cbd5f5;
+            --border-soft: rgba(148, 163, 184, 0.45);
+            --radius-lg: 22px;
+            --radius-md: 16px;
+            --shadow-soft: 0 32px 80px rgba(0, 0, 0, 0.9);
+        }
+
+        html, body {
+            height: 100%;
+            font-family: "Inter", system-ui, -apple-system, sans-serif;
+            background:
+                radial-gradient(circle at 10% 0%, var(--bg-grad-1) 0%, transparent 40%),
+                radial-gradient(circle at 90% 0%, var(--bg-grad-2) 0%, transparent 40%),
+                radial-gradient(circle at 50% 100%, var(--bg-grad-3) 0%, transparent 40%),
+                radial-gradient(circle at 50% 40%, var(--bg-base) 0%, var(--bg-base) 55%, var(--bg-base) 100%);
+            color: var(--text);
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* subtle noise overlay (same as original) */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image:
+                radial-gradient(1px 1px at 10% 20%, rgba(248, 250, 252, 0.45) 0, transparent 40%),
+                radial-gradient(1px 1px at 80% 10%, rgba(248, 250, 252, 0.4) 0, transparent 40%),
+                radial-gradient(1px 1px at 30% 70%, rgba(248, 250, 252, 0.3) 0, transparent 40%),
+                radial-gradient(1px 1px at 60% 80%, rgba(248, 250, 252, 0.35) 0, transparent 40%);
+            opacity: 0.5;
+            z-index: 0;
+        }
+
+        /* main panel — exact copy of .loader-panel / .gate-panel style */
+        .maintenance-panel {
+            width: min(520px, 92vw);
+            background: radial-gradient(circle at top, var(--panel-soft), var(--panel));
+            border-radius: 26px;
+            border: 1px solid var(--border-soft);
+            box-shadow: 0 40px 120px rgba(0, 0, 0, 1);
+            padding: 40px 32px 42px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            backdrop-filter: blur(4px);
+            animation: floatGlow 3s infinite alternate ease-in-out;
+        }
+
+        .maintenance-panel::before {
+            content: "";
+            position: absolute;
+            width: 180%;
+            height: 180%;
+            background: radial-gradient(circle at top, var(--accent-soft, rgba(79,70,229,0.5)), transparent 60%);
+            opacity: 0.6;
+            pointer-events: none;
+            z-index: -2;
+            top: -40%;
+            left: -40%;
+        }
+
+        .maintenance-panel::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        /* subtle floating effect — like your card hover but gentler */
+        @keyframes floatGlow {
+            0% { transform: translateY(0px); box-shadow: 0 40px 120px rgba(0,0,0,1); }
+            100% { transform: translateY(-6px); box-shadow: 0 50px 140px rgba(79,70,229,0.3); }
+        }
+
+        /* brand / orbit thing */
+        .brand-badge {
+            width: 70px;
+            height: 70px;
+            border-radius: 999px;
+            background: conic-gradient(from 210deg, var(--accent), var(--accent-2), var(--accent-3), var(--accent));
+            box-shadow: 0 0 36px rgba(79, 70, 229, 0.6);
+            position: relative;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .brand-badge::before {
+            content: "";
+            position: absolute;
+            inset: 6px;
+            border-radius: inherit;
+            border: 1px solid rgba(15, 23, 42, 0.7);
+            background: rgba(2, 6, 23, 0.3);
+            backdrop-filter: blur(2px);
+        }
+
+        .brand-badge svg {
+            width: 38px;
+            height: 38px;
+            position: relative;
+            z-index: 2;
+            filter: drop-shadow(0 0 6px rgba(255,255,255,0.5));
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 10px;
+            background: linear-gradient(120deg, #fff, var(--accent-3));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .code-pill {
+            font-family: "JetBrains Mono", monospace;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(148, 163, 184, 0.5);
+            border-radius: 999px;
+            padding: 8px 26px;
+            font-size: 1.2rem;
+            color: #a5f3fc;
+            letter-spacing: 0.1em;
+            margin: 18px 0 14px;
+            backdrop-filter: blur(6px);
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
+        }
+
+        .description {
+            color: var(--text-soft);
+            font-size: 1rem;
+            line-height: 1.6;
+            max-width: 380px;
+            margin: 10px 0 18px;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid rgba(61, 106, 255, 0.8);
+            border-radius: 999px;
+            padding: 12px 32px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: white;
+            cursor: default;  /* not interactive, just style */
+            box-shadow: 0 0 20px rgba(79, 70, 229, 0.3);
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(4px);
+        }
+
+        .btn-ghost svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .status-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 22px;
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+
+        .pulse-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #facc15;
+            box-shadow: 0 0 15px #fbbf24;
+            animation: pulse 1.8s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); background: #22d3ee; box-shadow: 0 0 22px #22d3ee; }
+            100% { opacity: 0.6; transform: scale(1); }
+        }
+
+        /* background elements (like your loader circles) */
+        .floating-particle {
+            position: absolute;
+            border-radius: 999px;
+            background: radial-gradient(circle at 30% 30%, rgba(168,85,247,0.4), transparent 70%);
+            width: 250px;
+            height: 250px;
+            z-index: 1;
+            filter: blur(60px);
+            opacity: 0.5;
+            animation: drift 16s infinite alternate;
+        }
+
+        .particle-1 {
+            top: 5%;
+            left: 5%;
+            background: radial-gradient(circle, rgba(79,70,229,0.5), transparent 70%);
+        }
+        .particle-2 {
+            bottom: 5%;
+            right: 5%;
+            background: radial-gradient(circle, rgba(34,211,238,0.4), transparent 70%);
+            animation-delay: -5s;
+            width: 300px;
+            height: 300px;
+        }
+
+        @keyframes drift {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(40px, -30px) scale(1.2); }
+        }
+
+        /* tiny loader bar (inspired by your loader) */
+        .tiny-loader {
+            width: 140px;
+            height: 3px;
+            background: rgba(148,163,184,0.2);
+            border-radius: 3px;
+            margin: 12px 0 6px;
+            overflow: hidden;
+        }
+        .tiny-loader-fill {
+            height: 100%;
+            width: 30%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-3));
+            border-radius: 3px;
+            animation: loaderSlide 2s ease infinite;
+        }
+        @keyframes loaderSlide {
+            0% { transform: translateX(-100%); }
+            50% { transform: translateX(200%); }
+            100% { transform: translateX(400%); }
+        }
+
+        /* media query for small screens */
+        @media (max-width: 480px) {
+            .maintenance-panel { padding: 32px 20px; }
+            h1 { font-size: 1.9rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- floating blurred orbs (like your background grads) -->
+    <div class="floating-particle particle-1"></div>
+    <div class="floating-particle particle-2"></div>
+
+    <!-- central maintenance card — exactly in the style of your loader/gate -->
+    <div class="maintenance-panel">
+        <!-- brand orb with tiny icon -->
+        <div class="brand-badge">
+            <svg viewBox="0 0 32 32" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="1.2">
+                <circle cx="16" cy="16" r="11" fill="none" stroke="currentColor" stroke-opacity="0.7" />
+                <ellipse cx="16" cy="16" rx="14" ry="5.4" fill="none" stroke="currentColor" stroke-opacity="0.5" />
+                <circle cx="22" cy="16" r="1.8" fill="#f97316" />
+            </svg>
+        </div>
+
+        <!-- main message -->
+        <h1>under maintenance</h1>
+
+        <!-- decorative code pill (like card__code-pill) -->
+        <div class="code-pill">
+            ~ FIX IN PROGRESS ~
+        </div>
+
+        <!-- descriptive text, matches your 'hero-sub' style -->
+        <div class="description">
+            The games site is currently down. <br> 
+            We’re adding new games and fixing others aswell. 
+            Please hold — we’ll be back.
+        </div>
+
+
+        <!-- tiny loader bar — subtle nod to your loader animation -->
+        <div class="tiny-loader">
+            <div class="tiny-loader-fill"></div>
+        </div>
+
+        <!-- status row with pulsing dot (like your toast dot) -->
+        <div class="status-row">
+            <span class="pulse-dot"></span>
+            <span>expected return: soon</span>
+        </div>
+
+        <!-- soft footer line (like gate-sub) -->
+        <div style="margin-top: 18px; font-size:0.75rem; color: #64748b; letter-spacing:0.1em;">
+            TINKLE CODES · MAINTENANCE MODE
+        </div>
+    </div>
+
+    <!-- subtle scan line / noise (optional, matches body::before) -->
+</body>
+</html>
